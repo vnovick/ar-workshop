@@ -4,8 +4,11 @@ import {
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
-  View
+  View,
+  Dimensions
 } from "react-native";
+import { ViroARSceneNavigator } from "react-viro";
+
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import BottomSheet from "reanimated-bottom-sheet";
 import {
@@ -13,11 +16,17 @@ import {
   TouchableOpacity
 } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-navigation";
+import { ARScene } from "../ARScene";
 
 export default class Example extends React.Component {
   renderInner = () => (
     <ScrollView horizontal pagingEnabled>
-      <View style={styles.panel}>
+      <View
+        style={{
+          ...styles.panel,
+          width: Dimensions.get("window").width
+        }}
+      >
         <Text style={styles.panelTitle}>
           Product No 1
         </Text>
@@ -72,7 +81,13 @@ export default class Example extends React.Component {
             this.bs.current.snapTo(2)
           }
         >
-          <View style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <ViroARSceneNavigator
+              apiKey="1839C275-6929-45AF-B638-EF2DEE44C1D9"
+              initialScene={{
+                scene: ARScene
+              }}
+            />
             <View style={styles.screenHeader}>
               <TouchableOpacity>
                 <View>
@@ -124,7 +139,6 @@ const styles = StyleSheet.create({
   },
   panel: {
     height: 600,
-    width: 380,
     padding: 20,
     backgroundColor: "#f7f5eee8"
   },

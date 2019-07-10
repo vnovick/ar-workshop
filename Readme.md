@@ -27,7 +27,23 @@ We'll go over all the installation at the very beginning, but it's crucial you w
 
 
 
-## Step1 - Integrating Viro into existing React Native app
+## Step1 - Understanding AR
+
+In this section you will put to test various AR capabilities
+
+- Create 3 boxes and position them in pyramid in front of the viewer
+
+- Create 3 different materials with different lighting models
+
+- Use ARPlaneSelector and Portal to create walkable portal
+
+- Create surface plane and add physics to these boxes
+
+- Add Scaling and Rotation capabilities
+
+  
+
+## Step2 - Integrating Viro into existing React Native app
 
 - Install latest **ViroMedia** app from AppStore or PlayStore
 
@@ -56,11 +72,80 @@ We'll go over all the installation at the very beginning, but it's crucial you w
   - Shop screen should show a view with cart on the top right corner with notifications 
   - It will have reanimated-bottom-sheet for our store navigation
 
-- Add Viro to existing app.
+###  Add Viro to existing app.
 
-- 
+https://docs.viromedia.com/docs/integrating-with-react-native-projects
 
-  
+`yarn add react-viro@2.14.0`
+
+#### iOS
+
+create Podfile under ios folder with:
+
+```
+platform :ios, '9.3'
+target 'chainReactARWorkshop' do
+  use_frameworks!
+  pod 'ViroReact', :path => '../node_modules/react-viro/ios/'
+  pod 'ViroKit', :path => '../node_modules/react-viro/ios/dist/ViroRenderer/'
+end
+```
+
+```bash
+cd ios
+pod install
+```
+
+- sign your app with valid AppleDeveloper account
+
+- change ios target in `Xcode` to `9.3`
+- Fix `GVRSDK` error
+- Build
+
+### Android
+
+https://docs.viromedia.com/docs/integrating-with-react-native-projects
+
+ 
+
+## Step 3 - add obj 3d models to your scene
+
+- Create 2 Viro3dObjects in your scene and add shadows, scaling, rotation and onpress interactions with them. 
+- When pressing should present ViroText with more detailed data
+
+Car:
+
+| type  | url  |
+| ----- | ---- |
+| model |      |
+|       |      |
+|       |      |
+|       |      |
+
+Sofa:
+
+| type  | url  |
+| ----- | ---- |
+| model |      |
+|       |      |
+|       |      |
+|       |      |
 
 
 
+## Step 4 - Manual Anchoring and 3dobject instance management
+
+
+
+- Add functionality - when different model is picked (Reset ARPlaneSelector or use manual  Anchoring)
+
+
+
+## Step 5 - Model GraphQL server
+
+- model database. There should be products, price, description, 3d model for every product and it's scale, resources etc.
+
+## Step 6 - Finalize our store
+
+- create a screen with list of products that are in cart
+- when clicking Buy, product will change it's state to in-cart
