@@ -17,42 +17,75 @@ import {
 } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-navigation";
 import { ARScene } from "../ARScene";
+import { Product } from "./Product";
+
+const productList = [
+  {
+    id: "12312-12312-312-31-23-135345",
+    title: "Product 1",
+    description: "bla bla bla",
+    price: "20$",
+    photo: require("./assets/airport-photo.jpg"),
+    model:
+      "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborghini_Aventador.obj",
+    resources: [
+      {
+        type: "roughnessTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_gloss.jpeg"
+      },
+      {
+        type: "metalnessTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_spec.jpeg"
+      },
+      {
+        type: "diffuseTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_diffuse.jpeg"
+      }
+    ]
+  },
+  {
+    id: "12312-12312-312-31-23-345345345",
+    title: "Product 2",
+    description: "bla bla bla",
+    price: "20$",
+    photo: require("./assets/airport-photo.jpg"),
+    model:
+      "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Sofa+GM+Plutone_OBJ.obj",
+    resources: [
+      {
+        type: "roughnessTexture",
+        uri:
+          "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Bump.jpg"
+      },
+      {
+        type: "diffuseTexture",
+        uri:
+          "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Dif.jpg"
+      }
+    ]
+  }
+];
 
 export default class Example extends React.Component {
   renderInner = () => (
     <ScrollView horizontal pagingEnabled>
-      <View
-        style={{
-          ...styles.panel,
-          width: Dimensions.get("window").width
-        }}
-      >
-        <Text style={styles.panelTitle}>
-          Product No 1
-        </Text>
-        <Text style={styles.panelSubtitle}>
-          This is my awesome product
-        </Text>
-        <Text style={styles.panelTitle}>20$</Text>
-        <TouchableOpacity
-          onPress={() => {
-            alert("Load model");
+      {productList.map(product => (
+        <Product
+          key={product.id}
+          {...product}
+          showModel={() => {
+            if (this.arSelectorRef.current) {
+              this.arSelectorRef.current.reset();
+            }
+            this.setState({
+              productId: product.id
+            });
           }}
-        >
-          <Image
-            style={styles.photo}
-            source={require("./assets/airport-photo.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => alert("Buy")}
-          style={styles.panelButton}
-        >
-          <Text style={styles.panelButtonTitle}>
-            Buy
-          </Text>
-        </TouchableOpacity>
-      </View>
+        />
+      ))}
     </ScrollView>
   );
 
@@ -65,6 +98,12 @@ export default class Example extends React.Component {
   );
 
   bs = React.createRef();
+
+  state = {
+    productId: null
+  };
+
+  arSelectorRef = React.createRef();
 
   render() {
     return (
@@ -86,6 +125,14 @@ export default class Example extends React.Component {
               apiKey="1839C275-6929-45AF-B638-EF2DEE44C1D9"
               initialScene={{
                 scene: ARScene
+              }}
+              viroAppProps={{
+                product: productList.filter(
+                  product =>
+                    product.id ===
+                    this.state.productId
+                ),
+                arSelectorRef: this.arSelectorRef
               }}
             />
             <View style={styles.screenHeader}>

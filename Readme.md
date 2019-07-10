@@ -41,6 +41,8 @@ In this section you will put to test various AR capabilities
 
 - Create surface plane and add physics to these boxes
 
+- Add reset `ARPlaneSelector` functionality
+
   
 
   
@@ -112,42 +114,153 @@ https://docs.viromedia.com/docs/integrating-with-react-native-projects
 
 ## Step 3 - add obj 3d models to your scene
 
-- Create 2 Viro3dObjects in your scene and add shadows, scaling, rotation and onpress interactions with them. 
-- When pressing should present ViroText with more detailed data
+- Create  `Viro3dObject` to the scene when user clicks on model picker. Model should be draggable
+
+  > Remember that you need to set textures in materials - there is no mtl supplied here.
 
 Car:
 
-| type  | url  |
-| ----- | ---- |
-| model |      |
-|       |      |
-|       |      |
-|       |      |
+| type             | url                                                          | Scale                                             |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| model            | https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborghini_Aventador.obj | {"scaleZ":0.0001,"scaleX":0.0001,"scaleY":0.0001} |
+| roughnessTexture | https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_gloss.jpeg |                                                   |
+| metalnessTexture | https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_spec.jpeg |                                                   |
+| diffuseTexture   | https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_diffuse.jpeg |                                                   |
 
 Sofa:
 
-| type  | url  |
-| ----- | ---- |
-| model |      |
-|       |      |
-|       |      |
-|       |      |
-
-
-
-## Step 4 - Manual Anchoring and 3dobject instance management
-
-
+| type            | url                                                          | Scale                                       |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| model           | https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Sofa+GM+Plutone_OBJ.obj | {"scaleZ":0.01,"scaleX":0.01,"scaleY":0.01} |
+| bumpnessTexture | https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Bump.jpg |                                             |
+| diffuseTexture  | https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Dif.jpg |                                             |
 
 - Add functionality - when different model is picked (Reset ARPlaneSelector or use manual  Anchoring)
 
+  >Bonus: Add scaling capabilities:
+
+  `OnPinch`
+
+  ```react
+    // Set initial scale
+    const [scale, setScale] = useState([
+      0.001,
+      0.001,
+      0.001
+    ]);
+  
+    //Set ref for 3dobject
+    const ar3dModelRef = useRef(null);
+  
+    const onPinch = (
+      pinchState,
+      scaleFactor,
+      source
+    ) => {
+      const newScale = scale.map(x => {
+        return x * scaleFactor;
+      });
+  
+      //pinch state 3 is the end of pinch
+      if (pinchState == 3) {
+        setScale(newScale);
+        return;
+      }
+  
+      //Ref will always be on current obj prop
+      ar3dModelRef.current.setNativeProps({
+        scale: newScale
+      });
+    };
+  ```
+
+  `onRotate`
+
+  ```react
+  const onRotate = (
+      rotateState,
+      rotationFactor,
+      source
+    ) => {
+      const newRotation = scale.map(x => {
+        return x - rotationFactor;
+      });
+  
+      if (rotateState == 3) {
+        setRotation(newRotation);
+        return;
+      }
+      //update rotation using setNativeProps
+      ar3dModelRef.current.setNativeProps({
+        rotation: newRotation
+      });
+    };
+  
+  ```
+
+  
 
 
-## Step 5 - Model GraphQL server
+
+## Step 4 - Model GraphQL server
 
 - model database. There should be products, price, description, 3d model for every product and it's scale, resources etc.
 
-## Step 6 - Finalize our store
+```json
+const productList = [
+  {
+    id: "12312-12312-312-31-23-135345",
+    title: "Product 1",
+    description: "bla bla bla",
+    price: "20$",
+    photo: 'photo-url',
+    model:
+      "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborghini_Aventador.obj",
+    resources: [
+      {
+        type: "roughnessTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_gloss.jpeg"
+      },
+      {
+        type: "metalnessTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_spec.jpeg"
+      },
+      {
+        type: "diffuseTexture",
+        uri:
+          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_diffuse.jpeg"
+      }
+    ]
+  },
+  {
+    id: "12312-12312-312-31-23-345345345",
+    title: "Product 2",
+    description: "bla bla bla",
+    price: "20$",
+    photo: 'photo-url',
+    model:
+      "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Sofa+GM+Plutone_OBJ.obj",
+    resources: [
+      {
+        type: "roughnessTexture",
+        uri:
+          "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Bump.jpg"
+      },
+      {
+        type: "diffuseTexture",
+        uri:
+          "https://ar-files-vnovick.s3-us-west-2.amazonaws.com/Cloth_Sofa+GM+Plutone_Dif.jpg"
+      }
+    ]
+  }
+];
+```
+
+
+
+## Step 5 - Finalize our store (Homework)
 
 - create a screen with list of products that are in cart
 - when clicking Buy, product will change it's state to in-cart
