@@ -101,12 +101,29 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    flavorDimensions "default"
     defaultConfig {
         applicationId "com.chainreactarworkshop"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+    }
+    productFlavors {
+        ar {
+            resValue 'string', 'app_name', 'ViroSample-ar'
+            buildConfigField 'String', 'VR_PLATFORM', '"GVR"'
+        }
+        gvr {
+            resValue 'string', 'app_name', 'ViroSample-gvr'
+            buildConfigField 'String', 'VR_PLATFORM', '"GVR"'
+        }
+        ovr {
+            resValue 'string', 'app_name', 'ViroSample-ovr'
+            applicationIdSuffix '.ovr'
+            buildConfigField 'String', 'VR_PLATFORM', '"OVR_MOBILE"'
+        }
     }
     splits {
         abi {
@@ -141,9 +158,22 @@ dependencies {
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-reanimated')
     implementation project(':react-native-vector-icons')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"
+    implementation project(':arcore_client') // remove this if AR not required
+    implementation project(':gvr_common')
+    implementation project(path: ':viro_renderer')
+    implementation project(path: ':react_viro')
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
+    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+    implementation 'commons-logging:commons-logging:1.1.1'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.2.+'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.2.+'
 }
 
 // Run this once to be able to run the application with BUCK
