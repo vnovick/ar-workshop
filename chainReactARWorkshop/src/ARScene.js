@@ -63,7 +63,7 @@ export const ARScene = ({
     rotationFactor,
     source
   ) => {
-    const newRotation = scale.map((x, index) => {
+    const newRotation = rotation.map((x, index) => {
       return index === 1 ? x - rotationFactor : x;
     });
 
