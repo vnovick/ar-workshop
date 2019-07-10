@@ -204,6 +204,8 @@ Sofa:
 
 ## Step 4 - Model GraphQL server
 
+- go to [hasura.io](https://hasura.io)
+- Click on getting started with Heroku
 - model database. There should be products, price, description, 3d model for every product and it's scale, resources etc.
 
 ```json
@@ -258,7 +260,13 @@ const productList = [
 ];
 ```
 
+- Add apollo client to your app. You can use [learn.hasura.io](https://learn.hasura.io) as reference
 
+- Create root GraphQL subscription for product list
+
+- See it in action
+
+  
 
 ## Step 5 - Finalize our store (Homework)
 
