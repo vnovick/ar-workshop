@@ -35,6 +35,8 @@ export default class HelloWorldSceneAR extends Component {
     );
   }
 
+  planeSelector = React.createRef();
+
   render() {
     return (
       <ViroARScene
@@ -45,7 +47,9 @@ export default class HelloWorldSceneAR extends Component {
           color="#ffffff"
           direction={[-5, -2, -1]}
         />
-        <ViroARPlaneSelector>
+        <ViroARPlaneSelector
+          ref={this.planeSelector}
+        >
           <ViroText
             text={this.state.text}
             scale={[0.5, 0.5, 0.5]}
@@ -73,6 +77,9 @@ export default class HelloWorldSceneAR extends Component {
             />
           </ViroPortalScene>
           <ViroBox
+            onClick={() =>
+              this.planeSelector.current.reset()
+            }
             dragType="FixedToWorld"
             onDrag={() => {}}
             materials={["box"]}
