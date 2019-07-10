@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "android:ar": "react-native run-android --variant='arDebug'",
+    "android:gvr": "react-native run-android --variant='gvrDebug'",
+    "android:ovr": "react-native run-android --variant='ovrDebug'"
   },
   "dependencies": {
     "react": "16.8.3",
