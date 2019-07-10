@@ -82,15 +82,16 @@ export const ARScene = ({
       viroAppProps.product &&
       viroAppProps.product.length > 0;
     if (isProductExist) {
-      const materials = viroAppProps.product[0].resources.reduce(
+      const materials = viroAppProps.product[0].model.resources.reduce(
         (acc, resource) => ({
           ...acc,
           [resource.type]: {
-            uri: resource.uri
+            uri: resource.url
           }
         }),
         {}
       );
+      alert(JSON.stringify(materials))
       ViroMaterials.createMaterials({
         modelMaterial: {
           lightingModel: "Lambert",
@@ -98,8 +99,8 @@ export const ARScene = ({
         }
       });
 
-      productResources = viroAppProps.product[0].resources.map(
-        resource => resource.uri
+      productResources = viroAppProps.product[0].model.resources.map(
+        resource => resource.url
       );
     }
   }, [viroAppProps]);
@@ -136,7 +137,7 @@ export const ARScene = ({
           <Viro3DObject
             ref={ar3dModelRef}
             source={{
-              uri: viroAppProps.product[0].model
+              uri: viroAppProps.product[0].model.url
             }}
             resources={productResources}
             onLoadEnd={data => {

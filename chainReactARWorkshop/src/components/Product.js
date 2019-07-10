@@ -29,7 +29,7 @@ export const Product = ({
     <TouchableOpacity onPress={showModel}>
       <Image
         style={styles.photo}
-        source={photo}
+        source={{ uri: photo}}
       />
     </TouchableOpacity>
     <TouchableOpacity

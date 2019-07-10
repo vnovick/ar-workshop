@@ -5,6 +5,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
+  ActivityIndicator,
   Dimensions
 } from "react-native";
 import { ViroARSceneNavigator } from "react-viro";
@@ -18,6 +19,27 @@ import {
 import { SafeAreaView } from "react-navigation";
 import { ARScene } from "../ARScene";
 import { Product } from "./Product";
+import gql from 'graphql-tag';
+import { Subscription } from 'react-apollo'
+
+const GET_PRODUCTS = gql`
+subscription getProducts {
+  products {
+    id
+    title
+    description
+    price
+    photo
+    model {
+      url,
+      resources {
+        url
+        type
+      }
+    }
+  }
+}
+`;
 
 const productList = [
   {
@@ -70,9 +92,9 @@ const productList = [
 ];
 
 export default class Example extends React.Component {
-  renderInner = () => (
+  renderInner = ({ products }) => () => (
     <ScrollView horizontal pagingEnabled>
-      {productList.map(product => (
+      {products.map(product => (
         <Product
           key={product.id}
           {...product}
@@ -108,59 +130,67 @@ export default class Example extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <BottomSheet
-          ref={this.bs}
-          snapPoints={[500, 200, 0]}
-          renderContent={this.renderInner}
-          renderHeader={this.renderHeader}
-          initialSnap={1}
-        />
-        <TouchableWithoutFeedback
-          onPress={() =>
-            this.bs.current.snapTo(2)
-          }
-        >
-          <View style={styles.container}>
-            <ViroARSceneNavigator
-              apiKey="1839C275-6929-45AF-B638-EF2DEE44C1D9"
-              initialScene={{
-                scene: ARScene
-              }}
-              viroAppProps={{
-                product: productList.filter(
-                  product =>
-                    product.id ===
-                    this.state.productId
-                ),
-                arSelectorRef: this.arSelectorRef
-              }}
-            />
-            <View style={styles.screenHeader}>
-              <TouchableOpacity>
-                <View>
-                  <Icon
-                    name="cart-outline"
-                    size={40}
-                    style={{ color: "#FFFFFF" }}
-                  />
-                  <View
-                    style={
-                      styles.cartNotifications
-                    }
-                  >
-                    <Text
-                      style={
-                        styles.cartNotificationsText
-                      }
-                    >
-                      3
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
+       <Subscription subscription={GET_PRODUCTS}>
+       {({ data, loading, error}) => {
+         if (data) {
+           return (
+             <>
+                <BottomSheet
+                  ref={this.bs}
+                  snapPoints={[500, 200, 0]}
+                  renderContent={this.renderInner(data)}
+                  renderHeader={this.renderHeader}
+                  initialSnap={1}
+                />
+                  <View style={styles.container}>
+                    <ViroARSceneNavigator
+                      apiKey="1839C275-6929-45AF-B638-EF2DEE44C1D9"
+                      initialScene={{
+                        scene: ARScene
+                      }}
+                      viroAppProps={{
+                        product: data.products.filter(
+                          product =>
+                            product.id ===
+                            this.state.productId
+                        ),
+                        arSelectorRef: this.arSelectorRef
+                      }}
+                    />
+                      <View style={styles.screenHeader}>
+                        <TouchableOpacity>
+                          <View>
+                            <Icon
+                              name="cart-outline"
+                              size={40}
+                              style={{ color: "#FFFFFF" }}
+                            />
+                            <View
+                              style={
+                                styles.cartNotifications
+                              }
+                            >
+                              <Text
+                                style={
+                                  styles.cartNotificationsText
+                                }
+                              >
+                                3
+                              </Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+          </>
+           )
+         }
+         if (error) {
+           return <View><Text>{JSON.stringify(error)}</Text></View>
+         }
+         return <View style={styles.loader}><ActivityIndicator size="large"/></View>
+       }}
+       </Subscription>
       </SafeAreaView>
     );
   }
@@ -169,6 +199,9 @@ export default class Example extends React.Component {
 const IMAGE_SIZE = 200;
 
 const styles = StyleSheet.create({
+  loader: {
+    position: 'absolute', height: '100%', justifyContent: 'center', alignItems: 'center', top: 0, right: 0, left: 0, bottom: 0, zIndex: 3
+  },
   container: {
     flex: 1,
     backgroundColor: "#161637"
