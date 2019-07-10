@@ -11,9 +11,13 @@ import {
   ViroConstants,
   ViroQuad,
   ViroBox,
+  Viro3DObject,
   ViroMaterials,
   ViroDirectionalLight,
-  ViroAmbientLight
+  ViroAmbientLight,
+  ViroPortalScene,
+  Viro360Image,
+  ViroPortal
 } from "react-viro";
 
 export default class HelloWorldSceneAR extends Component {
@@ -48,6 +52,26 @@ export default class HelloWorldSceneAR extends Component {
             position={[0, 0, -1]}
             style={styles.helloWorldTextStyle}
           />
+          <ViroPortalScene
+            passable={true}
+            dragType="FixedDistance"
+            onDrag={() => {}}
+          >
+            <ViroPortal scale={[0.5, 0.5, 0.5]}>
+              <Viro3DObject
+                source={require("./res/portal_wood_frame.vrx")}
+                resources={[
+                  require("./res/portal_wood_frame_diffuse.png"),
+                  require("./res/portal_wood_frame_normal.png"),
+                  require("./res/portal_wood_frame_specular.png")
+                ]}
+                type="VRX"
+              />
+            </ViroPortal>
+            <Viro360Image
+              source={require("./res/guadalupe_360.jpg")}
+            />
+          </ViroPortalScene>
           <ViroBox
             dragType="FixedToWorld"
             onDrag={() => {}}
