@@ -31,15 +31,17 @@ We'll go over all the installation at the very beginning, but it's crucial you w
 
 In this section you will put to test various AR capabilities
 
-- Create 3 boxes and position them in pyramid in front of the viewer
+- Create 3 boxes and position them in pyramid in front of the viewer (`ViroBox`)
 
-- Create 3 different materials with different lighting models
+- Add Directional light (`ViroDirectionalLight`)
 
-- Use ARPlaneSelector and Portal to create walkable portal
+- Create 3 different materials with different lighting models and colors (`ViroCreateMaterials`)
+
+- Use `ARPlaneSelector` and `Portal` to create walkable portal
 
 - Create surface plane and add physics to these boxes
 
-- Add Scaling and Rotation capabilities
+  
 
   
 
